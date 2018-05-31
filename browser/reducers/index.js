@@ -30,7 +30,11 @@ import { combineReducers } from 'redux';
 
 // for now, using a dummy reducer
 
-const reducer = (state = {}, action) => {
+const initialState = {
+  name: 'dolibeth'
+};
+
+const reducer = (state = initialState, action) => {
   return state;
 };
 
