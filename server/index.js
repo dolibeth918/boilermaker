@@ -2,6 +2,12 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
+const passport = require('passport');
+const { db, User } = require('./db/models');
+
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const dbStore = new SequelizeStore({ db: db });
 
 // logger middleware
 const morgan = require('morgan');
@@ -13,6 +19,37 @@ app.use(express.static(path.join(__dirname, '../public')));
 // body-parsing middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// SESSION MIDDLEWARE
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'a wildly insecure secret',
+    resave: false,
+    saveUninitialized: false
+  })
+); // this gives us req.session!
+
+// We need to initialize passport so that it will consume our req.session object, and attach the user to the request object
+app.use(passport.initialize());
+app.use(passport.session()); // hooks into the persistent sessions we are using
+
+// as a more resilient option - session information will be stored in our postgres database instead, so we can re-deploy/re-start our server without worrying about interrupting any currently logged-in users.
+// SYNC SESSIONS TO OUR SEQUELIZE DB
+dbStore.sync();
+
+passport.serializeUser((user, done) => {
+  try {
+    done(null, user.id);
+  } catch (err) {
+    done(err);
+  }
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+    .then(user => done(null, user))
+    .catch(done);
+});
 
 // API routes
 app.use('/api', require('./api'));

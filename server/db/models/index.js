@@ -1,7 +1,7 @@
 'use strict';
 
 const db = require('../index');
-const Example = require('./example');
+const User = require('./user');
 
 // Require all the models
 // Running each model (i.e. table) module (i.e. file) registers each model into our sequelize db
@@ -19,4 +19,4 @@ const Example = require('./example');
 
 // This is also probably a good place for you to set up your associations
 
-module.exports = { db, Example /*, Student, Campus*/ };
+module.exports = { db, User /*, Student, Campus*/ };
