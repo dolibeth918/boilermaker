@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // SESSION MIDDLEWARE
 app.use(
   session({
+    store: dbStore,
     secret: process.env.SESSION_SECRET || 'a wildly insecure secret',
     resave: false,
     saveUninitialized: false
