@@ -1,15 +1,17 @@
 const router = require('express').Router();
 const { User } = require('../db/models');
-
+console.log('in local');
 router.post('/login', async (req, res, next) => {
+  console.log('why not in login');
   const user = await User.findOne({
     where: {
       email: req.body.email
     }
   });
+  console.log(user.password, req.body.password);
   try {
     if (!user) res.status(401).send('User not found');
-    else if (!user.hasMatchingPassword(req.body.password))
+    else if (!user.correctPassword(req.body.password))
       res.status(401).send('Incorrect password');
     else {
       req.login(user, err => {

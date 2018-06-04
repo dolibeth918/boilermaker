@@ -8,6 +8,12 @@ const User = db.define('user', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  email: {
+    type: Sequelize.STRING,
+    validate: {
+      isEmail: true
+    }
+  },
   password: {
     type: Sequelize.STRING
   },
@@ -27,9 +33,7 @@ User.beforeUpdate(userInstance => {
 
 // instance methods
 User.prototype.correctPassword = function(candidatePassword) {
-  return (
-    this.Model.encryptPassword(candidatePassword, this.salt) === this.password
-  );
+  return User.encryptPassword(candidatePassword, this.salt) === this.password;
 };
 
 User.prototype.sanitize = function() {

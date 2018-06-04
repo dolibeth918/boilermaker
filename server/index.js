@@ -57,6 +57,12 @@ app.use('/api', require('./api'));
 // AUTH routes
 app.use('/auth', require('./auth'));
 
+// session logging middleware
+app.use(function(req, res, next) {
+  console.log('session', req.session);
+  next();
+});
+
 // server should send its index.html for any requests that don't match one of our API routes.
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '../public'));
