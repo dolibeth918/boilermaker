@@ -22,4 +22,16 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
+router.post('/signup', async (req, res, next) => {
+  const user = await User.create(req.body);
+  try {
+    req.login(user, err => {
+      if (err) next(err);
+      else res.json(user);
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
