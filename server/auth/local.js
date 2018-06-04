@@ -39,4 +39,8 @@ router.post('/logout', (req, res, next) => {
   res.sendStatus(200);
 });
 
+router.get('/me', (req, res, next) => {
+  res.json(req.user);
+});
+
 module.exports = router;
